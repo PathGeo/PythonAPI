@@ -12,7 +12,7 @@ CITIES_FILE = "uscities.txt"
 class CityGeocoder(dict):
 
 	def __init__(self, items = None, file=CITIES_FILE):        
-		super(Geocoder, self).__init__()
+		super(CityGeocoder, self).__init__()
 
 		self._loadFile(file)
 
