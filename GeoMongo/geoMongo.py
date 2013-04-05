@@ -163,8 +163,10 @@ class GeoMongoClient:
 			self.saveFeature(geoJson)
 	
 
-	def query(self, args, removeObjectID=True):
-	
+	def find(self, query, removeObjectID=False):
+		if type(query) is not dict:
+			raise Exception("Query must be a dictionary (ie, JSON).")
+			
 		exclude = {"_id" : 0} if removeObjectID else None
 		
 		return [ item for item in self._collection.find(args, fields=exclude) ]
