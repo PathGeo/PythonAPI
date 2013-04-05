@@ -54,6 +54,7 @@ class GeoMongoClient:
 		#convert miles to meters
 		radiusMeters = radiusMiles * 1609.34
 		
+		
 		query = { 'geometry': { '$near' : { '$geometry' : { 'type': 'Point', 'coordinates': center }, '$maxDistance' : radiusMeters } } }
 		results = self._collection.find(query, {"_id" : 0})
 		results = self._combineMultiGeometry(results)		
@@ -162,4 +163,14 @@ class GeoMongoClient:
 			self.saveFeature(geoJson)
 	
 
+	def query(self, args, removeObjectID=True):
+	
+		exclude = {"_id" : 0} if removeObjectID else None
+		
+		return [ item for item in self._collection.find(args, fields=exclude) ]
+		
+	def update(self, document):
+		self._collection.save(document)
+		
+	
 			
