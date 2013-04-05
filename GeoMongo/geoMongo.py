@@ -35,9 +35,12 @@ class GeoMongoClient:
 					
 					group = { 'type': 'Feature', 'properties': doc['properties'] }
 					group['geometry'] = { 'type': 'MultiPolygon' if doc['geometry']['type'].upper() == 'POLYGON' else 'MultiLineString' }
-					group['geometry']['coordinates'] = []
-					for groupResult in groupResults:
-						group['geometry']['coordinates'].append(groupResult['geometry']['coordinates'])
+					
+					group['geometry']['coordinates'] = [ g['geometry']['coordinates'] for g in groupResults ]
+					
+					#group['geometry']['coordinates'] = []
+					#for groupResult in groupResults:
+					#	group['geometry']['coordinates'].append(groupResult['geometry']['coordinates'])
 					
 					doneGroups.append(doc['groupId'])
 					results.append(group)
