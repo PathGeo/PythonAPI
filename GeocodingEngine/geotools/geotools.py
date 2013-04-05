@@ -4,7 +4,7 @@ import os
    
 CITIES_FILE = "uscities.txt"
    
-class Geocoder(dict):
+class CityGeocoder(dict):
 
     def __init__(self, items = None, file=CITIES_FILE):        
         super(Geocoder, self).__init__()
@@ -43,23 +43,25 @@ class Geocoder(dict):
             If the location can't be located, returns ('None', (0.0, 0.0)
         '''
         
-        loc = location.lower().strip()
+		noplace = (None, (None, None))
+		
+        if not location or type(location) is not str:
+            return noplace
         
-        if not location:
-            return ("None", (0.0, 0.0))
-        
-        if loc in self:
+		loc = location.lower().strip()
+		
+		if loc in self:
             return self.__getitem__(loc)
 
         token = loc.split(",")[0].strip()
         if token in self:
             return self.__getitem__(token)
         
-        firstWd = re.findall(r'\w+', loc)[0]
-        if firstWd in self:
-            return self.__getitem__(firstWd)
+        firstWord = re.findall(r'\w+', loc)[0]
+        if firstWord in self:
+            return self.__getitem__(firstWord)
         
-        return ("None", (0.0, 0.0))
+        return noplace
         
 
 class PointBuffer():
