@@ -25,6 +25,13 @@ class GeoMongoClient:
 	
 	
 	def _combineMultiGeometry(self, docs):
+		'''
+			Private method that combines multigeometry by looking at the "groupId" 
+			property.  Since MongoDB does not recognize the MultiPolygon and MultiLineString
+			GeoJSON types, these must be split up when inserted and re-combined when 
+			queried.
+		'''
+		
 		results = []
 		doneGroups = []
 		
@@ -38,10 +45,6 @@ class GeoMongoClient:
 					
 					group['geometry']['coordinates'] = [ g['geometry']['coordinates'] for g in groupResults ]
 					
-					#group['geometry']['coordinates'] = []
-					#for groupResult in groupResults:
-					#	group['geometry']['coordinates'].append(groupResult['geometry']['coordinates'])
-					
 					doneGroups.append(doc['groupId'])
 					results.append(group)
 			else: 
@@ -51,6 +54,10 @@ class GeoMongoClient:
 			
 		
 	def withinPointBuffer(self, center, radiusMiles):
+		'''
+			Returns all features that are within the region defined by the 
+			center point ("center") and the radius ("radiusMiles").
+		'''
 		#convert miles to meters
 		radiusMeters = radiusMiles * 1609.34
 		
@@ -63,6 +70,11 @@ class GeoMongoClient:
 	
 	
 	def withinBoundingBox(self, lowerLeft, upperRight):
+		'''
+			Returns all features within the bounding box defined by the "lowerLeft" and 
+			"upperRight" parameters.  The function expects each of these parameters to 
+			be a point that defines the lower left and upper right corners of the bounding box.
+		'''
 	
 		polygon = [ [ lowerLeft[0], lowerLeft[1] ], [ lowerLeft[0], upperRight[1] ],
 					[ upperRight[0], upperRight[1] ], [ upperRight[0], lowerLeft[1] ], 
@@ -76,6 +88,10 @@ class GeoMongoClient:
 		
 		
 	def withinPolygon(self, polygon):
+		'''
+			Returns all features that are within the "polygon" parameter.
+		'''
+	
 		query = { 'geometry': { '$geoWithin': { '$geometry': { 'type': 'Polygon', 'coordinates': [ polygon ] } } } }
 		results = self._collection.find(query, {"_id" : 0})
 		results = self._combineMultiGeometry(results)
@@ -84,6 +100,10 @@ class GeoMongoClient:
 	
 	
 	def intersectsPolygon(self, polygon):
+		'''
+			Returns all features that either intersect OR are within the "polygon" parameter.
+		'''
+	
 		query = { 'geometry': { '$geoIntersects': { '$geometry': { 'type': 'Polygon', 'coordinates': [ polygon ] } } } }
 		results = self._collection.find(query, {"_id" : 0})
 		results = self._combineMultiGeometry(results)
@@ -92,6 +112,10 @@ class GeoMongoClient:
 	
 	
 	def intersectsLine(self, line):
+		'''
+			Returns all features that intersect with the "line" parameter.
+		'''
+	
 		query = { 'geometry': { '$geoIntersects': { '$geometry': { 'type': 'LineString', 'coordinates': line } } } }
 		results = self._collection.find(query, {"_id" : 0})
 		results = self._combineMultiGeometry(results)
@@ -102,6 +126,12 @@ class GeoMongoClient:
 	
 	
 	def _convertIfNumeric(self, val):
+		'''
+			Checks whether the passed parameter "val" can be converted to an integer
+			or float.  If so, it returns the converted value.  Otherwise, it returns the
+			original parameter.
+		'''
+		
 		def isFloat(string):
 			try:
 				float(string)
@@ -118,6 +148,12 @@ class GeoMongoClient:
 	
 	
 	def _explodeMultiGeometry(self, geoJson):
+		'''
+			Private method that explodes multigeometry by before inserting into the database.  
+			Since MongoDB does not recognize the MultiPolygon and MultiLineString
+			GeoJSON types, these must be split up when inserted and re-combined when 
+			queried.
+		'''
 		if not self._collection:
 			return []
 			
@@ -142,6 +178,9 @@ class GeoMongoClient:
 
 		
 	def saveFeature(self, geoJson):
+		'''
+			Inserts the "geoJson" parameter into the current collection.  
+		'''
 
 		#convert all strings to their numerical values (if applicable)
 		for prop in geoJson['properties']:
@@ -159,11 +198,19 @@ class GeoMongoClient:
 			self._collection.insert(geoJson)
 			
 	def saveFeatures(self, geoJsonList):
+		'''
+			Inserts each element of the "geoJsonList" parameter into the current collection.
+		'''
+		
 		for geoJson in geoJsonList:
 			self.saveFeature(geoJson)
 	
 
 	def find(self, query, removeObjectID=False):
+		'''
+			Performs a query on the current collection.  Uses standard MongoDB query syntax.
+		'''
+		
 		if type(query) is not dict:
 			raise Exception("Query must be a dictionary (ie, JSON).")
 			
@@ -172,6 +219,12 @@ class GeoMongoClient:
 		return [ item for item in self._collection.find(args, fields=exclude) ]
 		
 	def update(self, document):
+		'''
+			Updates the current collection with the passed "document" parameter.
+			Note: An Object ID field must be included in the "document" object, otherwise
+			a new record will be created in the collection.
+		'''
+		
 		self._collection.save(document)
 		
 	
