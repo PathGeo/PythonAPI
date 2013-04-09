@@ -7,7 +7,11 @@ from excelUtils import DataTableFactory
 table = DataTableFactory.getDataTable("c:\\Locations.xlsx")
 
 table.getRowsAsList()
-table.getRowsAsJSON()
+
+#or
+table = DataTableFactory.getDataTable(open("c:\\Locations.csv"))
+
+table.getRowsAsList()
 '''
 
 
