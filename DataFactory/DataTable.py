@@ -16,7 +16,7 @@ table.getRowsAsList()
 
 
 
-class DataTable:
+class DataTable(object):
 
 	def __init__(self, colNames, rows):
 		
