@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 
-MULTIGEOMETRY = ("MULTILINESTRING", "MULTIPOLYGON")
-
 class GeoMongoClient:
+	MULTIGEOMETRY = ("MULTILINESTRING", "MULTIPOLYGON")
 
 	def __init__(self, dbName, collectionName, createNew=True):
 		try: 
