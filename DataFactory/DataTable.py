@@ -60,9 +60,14 @@ class DataTableFactory:
 	
 	@staticmethod
 	def getDataTable(fileName=None, fileStream=None, opts={}):
+		'''
+			Parses CSV or Excel data and returns a DataTable object.
+			Note that a file name must be passed.  If no fileStream is passed,
+			it will open a file using the fileName parameter.
+		'''
 		
-		if not fileName and not fileStream:
-			raise Exception("Error: Must pass a file name or file stream.")
+		if not fileName:
+			raise Exception("Error: Must pass a file name.")
 		
 		if fileName and not fileStream:
 			try: 
@@ -70,7 +75,7 @@ class DataTableFactory:
 			except Exception, e:
 				raise e
 		
-		ext = fileStream.name.split('.')[-1].upper()
+		ext = fileName.split('.')[-1].upper()
 				
 		if ext not in DataTableFactory.VALID_EXTENSIONS:
 			raise Exception("Error: File must be one of the following types: %s" % ', '.join(DataTableFactory.VALID_EXTENSIONS))
