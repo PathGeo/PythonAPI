@@ -74,7 +74,7 @@ class CityGeocoder(dict):
 	Note: Currently, this is just a wrapper for the geopy geocoders,
 	but we can use the same API when our own custom geocoder is set up.
 '''	
-class AddressGeocoder:
+class AddressGeocoder(object):
 		
 		def __init__(self, geocoderName="GEOCODERDOTUS"): 			
 		
