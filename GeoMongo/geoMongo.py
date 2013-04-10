@@ -26,7 +26,7 @@ class GeoMongoClient:
 	
 	def _combineMultiGeometry(self, docs):
 		'''
-			Private method that combines multigeometry by looking at the "groupId" 
+			Private method that combines multigeometry by looking at the "groupId"  
 			property.  Since MongoDB does not recognize the MultiPolygon and MultiLineString
 			GeoJSON types, these must be split up when inserted and re-combined when 
 			queried.
