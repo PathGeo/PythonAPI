@@ -16,6 +16,15 @@ class Shapefile(object):
 	def getFeatures(self):
 		return self._features
 		
+	def filterByProperty(self, 
+		#there's a SetAttributeFilter in OGR...use that?
+		pass
+		
+	
+	def filterByPolygon(self, properties):
+		#??
+		pass
+	
 		
 	def saveAsSHP(self, outName):
 		output = fiona.open(outName, 'w', **self._source.meta)
@@ -30,4 +39,7 @@ class Shapefile(object):
 		out = open(outName, "w")
 		out.write(json.dumps(featureCollection))
 
-			
+	@classmethod
+	def saveGeoJSONFeatures(features):
+		pass
+		
