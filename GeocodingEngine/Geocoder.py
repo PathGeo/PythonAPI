@@ -100,10 +100,12 @@ class AddressGeocoder(object):
 					return (place, (lat, lng))
 				else:
 					return noplace
-			else:
+			elif coded:
 				place, (lat, lng) = coded
 				if place and lat and lng:
 					return (place, (lat, lng))
 				else:
 					return noplace
+			
+			return noplace
 		
