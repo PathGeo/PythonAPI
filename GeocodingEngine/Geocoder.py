@@ -76,14 +76,20 @@ class CityGeocoder(dict):
 '''	
 class AddressGeocoder(object):
 		
-		def __init__(self, geocoderName="GEOCODERDOTUS"): 			
+		def __init__(self, username=None, password=None, geocoderName="GEOCODERDOTUS"): 			
 		
 			import geopy
 		
 			geocoderName = geocoderName.upper()
 			
 			if geocoderName == "GEOCODERDOTUS":
-				self._geocoder = geopy.geocoders.GeocoderDotUS()
+				if username and password:
+					#self._geocoder = geopy.geocoders.GeocoderDotUS(username, password)
+					#NOTE: I don't believe geopy handles Geocoder.US usernames and passwords
+					#properly, so just calling without these for now...
+					self._geocoder = geopy.geocoders.GeocoderDotUS()
+				else:
+					self._geocoder = geopy.geocoders.GeocoderDotUS()
 			else:
 				self._geocoder = geopy.geocoders.GoogleV3()
 		

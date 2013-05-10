@@ -45,7 +45,7 @@ class DataTable(object):
 			doc = {}
 		
 			for colIndx, colName in enumerate(self._colNames):
-				doc[colName] = self._rows[rowIndx][colIndx]
+				doc[colName.replace(" ", "_")] = self._rows[rowIndx][colIndx]
 				
 			results.append(doc)
 			
