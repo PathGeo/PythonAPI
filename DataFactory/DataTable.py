@@ -45,7 +45,8 @@ class DataTable(object):
 			doc = {}
 		
 			for colIndx, colName in enumerate(self._colNames):
-				doc[colName.replace(" ", "_")] = self._rows[rowIndx][colIndx]
+				formattedName = colName.strip().replace(" ", "_")
+				doc[formattedName] = self._rows[rowIndx][colIndx]
 				
 			results.append(doc)
 			
@@ -105,7 +106,7 @@ class DataTableFactory:
 
 			data = [ row for row in reader ]
 
-			colNames = [col.lower() for col in data[0]]
+			colNames = [col.lower().strip() for col in data[0]]
 			rows = [ row for row in data[1:] ]			
 		
 		return DataTable(colNames, rows)
