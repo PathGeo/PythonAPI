@@ -1,8 +1,50 @@
 class PathgeoTwitter:
-    import sys
+    import sys, cgi, cgitb,json
     from datetime import datetime
 
 
+
+    
+    '''
+        getURLParameter
+        input
+            1. *key(string): the requested name of paramter
+            2. *cgiFieldStorage(cgi.FieldStorage()):
+        return string: the value of the requested parameter
+    '''
+    def getURLParameter(key, cgiFieldStorage):
+      return None if not key in cgiFieldStorage or cgiFieldStorage[key].value=='' else cgiFieldStorage[key].value
+
+
+
+
+
+    '''
+        convertToGeojson
+        input
+            1. *obj_array(Array): an array contain obects
+            2. *latFieldName(String): a field name for lat
+            3. *lonFieldName(String): a filed name for lon
+        return
+            geojson string
+    '''
+    def convertToGeojson(obj_array, latFieldName, lonFieldName):
+        import json
+        
+        dthandler = lambda obj: (obj.isoformat() if isinstance(obj, datetime) or isinstance(obj, date) else None)
+        results=[]
+
+        for obj in obj_array:
+                lat=obj[latFieldName]
+                lon=obj[lonFieldName]
+
+                results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon,lat]), properties=obj))
+
+        return json.dumps(results, default=dthandler)
+
+
+
+    
 
     '''
         createXLSX: convert tweets array into xlsx file
